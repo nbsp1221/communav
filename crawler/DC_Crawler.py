@@ -12,7 +12,7 @@ from fake_useragent import UserAgent as ua
 
 import numpy as np
 
-# 0 ÀÌ»ó 1 ¹Ì¸¸ÀÇ ³­¼ö »ı¼º
+# 0 ì´ìƒ 1 ë¯¸ë§Œì˜ ë‚œìˆ˜ ìƒì„±
 random_number = np.random.rand()
 
 
