@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 # .env 파일에서 환경 변수 로드
-load_dotenv()
+load_dotenv(override=True)
 
 # DB 관련 정보
 MYSQL_ROOT_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')
