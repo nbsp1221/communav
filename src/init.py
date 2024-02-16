@@ -7,6 +7,7 @@ cursor = connection.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS everytime_articles (
         id VARCHAR(255) PRIMARY KEY,
+        board_id VARCHAR(255),
         is_notice TINYINT(1),
         is_question TINYINT(1),
         title TEXT,
