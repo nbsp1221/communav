@@ -1,3 +1,4 @@
+import random
 import requests
 import time
 import xmltodict
@@ -161,7 +162,7 @@ def main():
         return
 
     while True:
-        time.sleep(0.5)
+        time.sleep(random.randint(1, 5))
 
         articles = fetch_articles(board_id, start, limit)['response']['article']
         article_ids = [article['@id'] for article in articles]
@@ -172,7 +173,7 @@ def main():
             break
 
         for article_id in article_ids:
-            time.sleep(0.5)
+            time.sleep(random.randint(1, 5))
 
             response = fetch_comments(article_id)['response']
             article = response['article']
