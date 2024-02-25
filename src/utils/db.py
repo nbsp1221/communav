@@ -1,6 +1,6 @@
 import pymysql
-import utils.env as env
 from pymysql import Error
+from . import env
 
 connection = None
 
