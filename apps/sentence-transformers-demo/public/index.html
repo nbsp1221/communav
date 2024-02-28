@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Communav - SentenceTransformers Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        color: inherit;
+        font-size: 100%;
+        text-decoration: none;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.25rem;
+      }
+      input {
+        padding: 8px;
+        border: 1px solid #a1a1aa;
+        border-radius: 0.25rem;
+        outline: none;
+      }
+      input:focus {
+        border-color: #3f3f46;
+      }
+      button {
+        height: 36px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 0.25rem;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .article {
+        margin: 16px 0;
+        padding: 16px;
+        border: 1px solid #a1a1aa;
+        border-radius: 0.25rem;
+        text-align: left;
+      }
+      .article .score {
+        display: block;
+        align-self: flex-start;
+        min-width: 116px;
+        padding: 4px 8px;
+        border-radius: 0.25rem;
+        background-color: #6c757d;
+        color: white;
+        font-size: 0.875rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main style="text-align: center;">
+      <section style="margin: 32px 0;">
+        <h1 style="margin-bottom: 4px;">Communav - SentenceTransformers Demo</h1>
+        <p>입력한 문장과 유사한 에브리타임 게시글 상위 10개를 보여줍니다.</p>
+      </section>
+      <section style="width: 100%; max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input id="query" type="text" placeholder="웹 개발자가 되고 싶은데 어떤 식으로 공부하면 좋을까요?" style="flex: 1;">
+          <button id="predict" type="button">예측</button>
+        </div>
+        <div id="predictions"></div>
+      </section>
+    </main>
+    <script>
+      const queryEl = document.getElementById('query');
+      const predictEl = document.getElementById('predict');
+      const predictionsEl = document.getElementById('predictions');
+
+      async function predict() {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: queryEl.value,
+            top_k: 10,
+          })
+        });
+
+        const data = await response.json();
+
+        predictionsEl.innerHTML = data.predictions
+          .map(({ score, article }) => `
+            <a href="https://everytime.kr/${article.board_id}/v/${article.id}" target="_blank">
+              <article class="article">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <h2>${article.title}</h2>
+                  <span class="score">Score: ${score.toFixed(5)}</span>
+                </div>
+                <p>${article.text.replace(/\n/g, '<br>')}</p>
+              </article>
+            </a>
+          `)
+          .join('');
+      }
+
+      predictEl.addEventListener('click', predict);
+    </script>
+  </body>
+</html>

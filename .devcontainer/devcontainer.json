@@ -11,6 +11,9 @@
     "--gpus",
     "all"
   ],
+  "appPort": [
+    "8000:8000"
+  ],
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
