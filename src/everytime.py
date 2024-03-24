@@ -8,40 +8,62 @@ from bs4 import BeautifulSoup
 from pymysql import Error
 
 common_headers = {
-    'Accept': '*/*',
     'Accept-Language': 'en-US,en;q=0.9,ko-KR;q=0.8,ko;q=0.7',
-    'Authority': 'api.everytime.kr',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Cookie': env.EVERYTIME_COOKIE,
     'Origin': 'https://everytime.kr',
     'Referer': 'https://everytime.kr/',
-    'Sec-CH-UA': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+    'Sec-CH-UA': 'Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
     'Sec-CH-UA-Mobile': '?0',
     'Sec-CH-UA-Platform': '"Windows"',
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-site',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
 }
 
 def fetch_articles(board_id, start, limit):
+    # 브라우저와 동일한 환경을 유지하기 위해 추가적인 요청을 보냄
+    url = 'https://api.everytime.kr/v2/find/board/article/list'
+    headers = {
+        **common_headers,
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'mode': 'board',
+        'boardId': board_id,
+        'isBoardInfoRequired': True
+    }
+    response = requests.post(url, headers=headers, json=data)
+
+    # 해당 로직에서 실제로 사용되는 요청
     url = 'https://api.everytime.kr/find/board/article/list'
+    headers = {
+        **common_headers,
+        'Accept': '*/*',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    }
     data = {
         'id': board_id,
         'limit_num': limit,
         'start_num': start,
     }
-    response = requests.post(url, headers=common_headers, data=data)
+    response = requests.post(url, headers=headers, data=data)
     return xmltodict.parse(response.text)
 
 def fetch_comments(article_id):
     url = 'https://api.everytime.kr/find/board/comment/list'
+    headers = {
+        **common_headers,
+        'Accept': '*/*',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    }
     data = {
         'id': article_id,
         'limit_num': -1,
         'articleInfo': 'true'
     }
-    response = requests.post(url, headers=common_headers, data=data)
+    response = requests.post(url, headers=headers, data=data)
     return xmltodict.parse(response.text)
 
 def insert_article_to_db(board_id, article):
