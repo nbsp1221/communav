@@ -46,6 +46,7 @@ cursor.execute('''
     CREATE TABLE IF NOT EXISTS everytime_article_labels (
         article_id VARCHAR(255) PRIMARY KEY,
         category_ids JSON,
+        is_ambiguous TINYINT(1),
         is_verified TINYINT(1),
         FOREIGN KEY (article_id) REFERENCES everytime_articles(id)
     )

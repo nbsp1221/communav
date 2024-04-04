@@ -15,11 +15,13 @@ export async function POST(request: NextRequest) {
         INSERT INTO everytime_article_labels (
           article_id,
           category_ids,
+          is_ambiguous,
           is_verified
         )
         VALUES (?, ?, 0)
         ON DUPLICATE KEY UPDATE
           category_ids = VALUES(category_ids),
+          is_ambiguous = 0,
           is_verified = 0
       `,
       [articleId, JSON.stringify(categoryIds)]
