@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 export default function Home() {
   const [message, setMessage] = useState('');
-  const [conversation, setConversation] = useState<{ role: string, content: string }[]>([]);
+  const [conversation, setConversation] = useState<{ role: string; content: string }[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -20,7 +20,7 @@ export default function Home() {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://retn0.iptime.org:11011/api/chat');
     xhr.setRequestHeader('Content-Type', 'application/json');
-  
+
     xhr.onreadystatechange = function () {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
@@ -32,28 +32,29 @@ export default function Home() {
             { role: 'assistant', content: assistantReply },
           ]);
           setMessage('');
-        } else {
+        }
+        else {
           console.error('Error:', xhr.status);
         }
       }
     };
-  
+
     const requestData = {
       model: 'llama2',
       messages: [...conversation, { role: 'user', content: message }],
     };
-  
+
     xhr.send(JSON.stringify(requestData));
   };
 
   const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!message.trim()) return;
-  
+
     const newConversation = [...conversation, { role: 'user', content: message }];
     setConversation(newConversation);
     setMessage('');
-  
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -63,14 +64,15 @@ export default function Home() {
         body: JSON.stringify({
           model: 'gemma',
           messages: newConversation,
-          "stream": false
+          'stream': false,
         }),
       });
-  
+
       const data = await response.json();
       const assistantReply = data.content;
       setConversation([...newConversation, { role: 'assistant', content: assistantReply }]);
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error:', error);
     }
   };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { categories } from '@/constants/categories';
 import { Labeler } from './Labeler';
 import { type Article } from './types';
@@ -39,7 +39,7 @@ export default function LabelingPage() {
         },
         body: JSON.stringify({
           articleId,
-          categoryIds
+          categoryIds,
         }),
       });
 
@@ -50,7 +50,7 @@ export default function LabelingPage() {
 
       setSavingState((prevSavingState) => ({
         ...prevSavingState,
-        [articleId]: true
+        [articleId]: true,
       }));
     }
     catch (error) {
@@ -72,7 +72,8 @@ export default function LabelingPage() {
         <ul className="list-disc list-inside space-y-2">
           {categories.map((category) => (
             <li key={category.id}>
-              <span className="font-semibold">{category.name}</span>: {category.description}
+              <span className="font-semibold">{category.name}</span>
+              <span>: {category.description}</span>
             </li>
           ))}
         </ul>

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 const categories = ['일반', '질문', '정보', '유머', '뉴스'];
 
@@ -35,14 +35,13 @@ const CommunityPage = () => {
   const toggleCategory = (category: string) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(selectedCategories.filter((c) => c !== category));
-    } else {
+    }
+    else {
       setSelectedCategories([...selectedCategories, category]);
     }
   };
 
-  const filteredPosts = dummyPosts.filter((post) =>
-    selectedCategories.every((category) => post.categories.includes(category))
-  );
+  const filteredPosts = dummyPosts.filter((post) => selectedCategories.every((category) => post.categories.includes(category)));
 
   return (
     <div className="container mx-auto py-8">
