@@ -108,7 +108,7 @@ export default function CommunityPage() {
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant={selectedCategories.includes(category.id) ? 'secondary' : 'outline'}
+              variant={selectedCategories.includes(category.id) ? 'default' : 'outline'}
               onClick={() => toggleCategory(category.id)}
             >
               {category.name}
