@@ -104,6 +104,21 @@ export default function CommunityPage() {
           <Card key={article.id} className="p-4">
             <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
             <p className="text-gray-600 mb-4">{article.text}</p>
+            <div className="flex items-center space-x-2 mb-4">
+              {article.category_ids.map((categoryId) => {
+                const category = categories.find((category) => category.id === categoryId);
+
+                if (category) {
+                  return (
+                    <Badge key={categoryId} variant="outline">
+                      {category.name}
+                    </Badge>
+                  );
+                }
+
+                return null;
+              })}
+            </div>
             <div className="flex items-center space-x-4">
               <span className="text-gray-500">{article.created_at}</span>
             </div>

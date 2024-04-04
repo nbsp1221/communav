@@ -3,4 +3,5 @@ export interface Article {
   title: string;
   text: string;
   created_at: string;
+  category_ids: number[];
 }
