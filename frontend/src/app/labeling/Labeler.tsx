@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { categories } from '@/constants/categories';
 import { cn } from '@/lib/utils';
-import { type Article } from './types';
+import { type Article } from '@/types';
 
 interface FormData {
   checkedCategories: Record<string, boolean>;

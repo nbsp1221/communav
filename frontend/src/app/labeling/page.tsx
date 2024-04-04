@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { categories } from '@/constants/categories';
+import { type Article } from '@/types';
 import { Labeler } from './Labeler';
-import { type Article } from './types';
 
 export default function LabelingPage() {
   const [unlabeledArticles, setUnlabeledArticles] = useState<Article[]>([]);

@@ -1,77 +1,143 @@
 'use client';
 
-import React, { useState } from 'react';
+import queryString from 'query-string';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { categories } from '@/constants/categories';
+import { type Article } from '@/types';
 
-const categories = ['일반', '질문', '정보', '유머', '뉴스'];
+interface FetchArticlesRequest {
+  categoryIds: number[];
+  start: number;
+  limit: number;
+}
 
-const dummyPosts = [
-  {
-    id: 1,
-    title: '커뮤니티 첫 글입니다.',
-    summary: '안녕하세요. 커뮤니티에 처음 글을 작성합니다. 앞으로 잘 부탁드립니다!',
-    comments: 5,
-    likes: 10,
-    createdAt: '2023-04-01',
-    categories: ['일반'],
-  },
-  {
-    id: 2,
-    title: 'TypeScript 질문드립니다.',
-    summary: 'TypeScript에서 인터페이스와 타입 별칭의 차이점이 궁금합니다. 설명 부탁드립니다.',
-    comments: 3,
-    likes: 8,
-    createdAt: '2023-04-02',
-    categories: ['질문'],
-  },
-  // ... 추가 더미 데이터
-];
+interface FetchArticlesResponse {
+  data: Article[];
+  pagination: {
+    totalCount: number;
+    start: number;
+    limit: number;
+  };
+}
 
-const CommunityPage = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+async function fetchArticles(request: FetchArticlesRequest): Promise<FetchArticlesResponse> {
+  const response = await fetch(`/api/articles?${queryString.stringify({
+    categoryIds: JSON.stringify(request.categoryIds),
+    start: request.start,
+    limit: request.limit,
+  })}`);
 
-  const toggleCategory = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+  if (!response.ok) {
+    throw new Error('Failed to fetch articles');
+  }
+
+  return response.json();
+}
+
+export default function CommunityPage() {
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [pagination, setPagination] = useState({ totalCount: 0, start: 0, limit: 20 });
+
+  useEffect(() => {
+    fetchArticles({
+      categoryIds: selectedCategories,
+      start: pagination.start,
+      limit: pagination.limit,
+    })
+      .then((response) => {
+        setArticles(response.data);
+        setPagination(response.pagination);
+      })
+      .catch((error) => {
+        console.error('Error while fetching articles:', error);
+      });
+  }, [selectedCategories, pagination.start, pagination.limit]);
+
+  const toggleCategory = (categoryId: number) => {
+    if (selectedCategories.includes(categoryId)) {
+      setSelectedCategories(selectedCategories.filter((value) => value !== categoryId));
     }
     else {
-      setSelectedCategories([...selectedCategories, category]);
+      setSelectedCategories([...selectedCategories, categoryId]);
     }
   };
 
-  const filteredPosts = dummyPosts.filter((post) => selectedCategories.every((category) => post.categories.includes(category)));
+  const handlePageChange = (page: number) => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      start: (page - 1) * prevPagination.limit,
+    }));
+  };
+
+  const totalPages = Math.ceil(pagination.totalCount / pagination.limit);
+  const currentPage = pagination.start / pagination.limit + 1;
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-4">커뮤니티 게시글</h1>
+      <h1 className="text-4xl font-bold mb-4">커뮤니티</h1>
       <div className="mb-4 flex space-x-2">
         {categories.map((category) => (
           <Button
-            key={category}
-            variant={selectedCategories.includes(category) ? 'secondary' : 'outline'}
-            onClick={() => toggleCategory(category)}
+            key={category.id}
+            variant={selectedCategories.includes(category.id) ? 'secondary' : 'outline'}
+            onClick={() => toggleCategory(category.id)}
           >
-            {category}
+            {category.name}
           </Button>
         ))}
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredPosts.map((post) => (
-          <Card key={post.id} className="p-4">
-            <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
-            <p className="text-gray-600 mb-4">{post.summary}</p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {articles.map((article) => (
+          <Card key={article.id} className="p-4">
+            <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
+            <p className="text-gray-600 mb-4">{article.text}</p>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline">{post.comments} 댓글</Badge>
-              <Badge variant="outline">{post.likes} 좋아요</Badge>
-              <span className="text-gray-500">{post.createdAt}</span>
+              <span className="text-gray-500">{article.created_at}</span>
             </div>
           </Card>
         ))}
       </div>
+      <div className="mt-8 flex justify-center">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href="#"
+                  isActive={index + 1 === currentPage}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            {totalPages > 1 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
-};
-
-export default CommunityPage;
+}
