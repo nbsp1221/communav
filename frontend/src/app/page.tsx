@@ -77,6 +77,10 @@ export default function CommunityPage() {
 
   const totalPages = Math.ceil(pagination.totalCount / pagination.limit);
   const currentPage = pagination.start / pagination.limit + 1;
+  const pageRange = 5;
+  const startPage = Math.max(1, currentPage - Math.floor(pageRange / 2));
+  const endPage = Math.min(totalPages, startPage + pageRange - 1);
+  const visiblePages = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
   const handlePageChange = (page: number) => {
     const minPage = 1;
@@ -149,20 +153,35 @@ export default function CommunityPage() {
               <PaginationItem>
                 <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
               </PaginationItem>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <PaginationItem key={index}>
+              {startPage > 1 && (
+                <PaginationItem>
+                  <PaginationLink href="#" onClick={() => handlePageChange(1)}>1</PaginationLink>
+                </PaginationItem>
+              )}
+              {startPage > 2 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              {visiblePages.map((page) => (
+                <PaginationItem key={page}>
                   <PaginationLink
                     href="#"
-                    isActive={index + 1 === currentPage}
-                    onClick={() => handlePageChange(index + 1)}
+                    isActive={page === currentPage}
+                    onClick={() => handlePageChange(page)}
                   >
-                    {index + 1}
+                    {page}
                   </PaginationLink>
                 </PaginationItem>
               ))}
-              {totalPages > 1 && (
+              {endPage < totalPages - 1 && (
                 <PaginationItem>
                   <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              {endPage < totalPages && (
+                <PaginationItem>
+                  <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>{totalPages}</PaginationLink>
                 </PaginationItem>
               )}
               <PaginationItem>
