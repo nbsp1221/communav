@@ -75,15 +75,18 @@ export default function CommunityPage() {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setPagination((prevPagination) => ({
-      ...prevPagination,
-      start: (page - 1) * prevPagination.limit,
-    }));
-  };
-
   const totalPages = Math.ceil(pagination.totalCount / pagination.limit);
   const currentPage = pagination.start / pagination.limit + 1;
+
+  const handlePageChange = (page: number) => {
+    const minPage = 1;
+    const newPage = Math.max(minPage, Math.min(page, totalPages));
+
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      start: (newPage - 1) * prevPagination.limit,
+    }));
+  };
 
   return (
     <div>
