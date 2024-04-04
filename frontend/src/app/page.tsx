@@ -86,72 +86,86 @@ export default function CommunityPage() {
   const currentPage = pagination.start / pagination.limit + 1;
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-4">커뮤니티</h1>
-      <div className="mb-4 flex space-x-2">
-        {categories.map((category) => (
-          <Button
-            key={category.id}
-            variant={selectedCategories.includes(category.id) ? 'secondary' : 'outline'}
-            onClick={() => toggleCategory(category.id)}
-          >
-            {category.name}
-          </Button>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {articles.map((article) => (
-          <Card key={article.id} className="p-4">
-            <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
-            <p className="text-gray-600 mb-4">{article.text}</p>
-            <div className="flex items-center space-x-2 mb-4">
-              {article.category_ids.map((categoryId) => {
-                const category = categories.find((category) => category.id === categoryId);
-
-                if (category) {
-                  return (
-                    <Badge key={categoryId} variant="outline">
-                      {category.name}
-                    </Badge>
-                  );
-                }
-
-                return null;
-              })}
+    <div>
+      <nav className="bg-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <a href="/" className="text-white text-2xl font-bold">커뮤니티</a>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-500">{article.created_at}</span>
+            <div className="flex space-x-4">
+              <a href="/labeling" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">라벨링</a>
+              <a href="/statistics" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">통계</a>
             </div>
-          </Card>
-        ))}
-      </div>
-      <div className="mt-8 flex justify-center">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  href="#"
-                  isActive={index + 1 === currentPage}
-                  onClick={() => handlePageChange(index + 1)}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            {totalPages > 1 && (
+          </div>
+        </div>
+      </nav>
+      <div className="container mx-auto py-8">
+        <div className="mb-4 flex space-x-2">
+          {categories.map((category) => (
+            <Button
+              key={category.id}
+              variant={selectedCategories.includes(category.id) ? 'secondary' : 'outline'}
+              onClick={() => toggleCategory(category.id)}
+            >
+              {category.name}
+            </Button>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {articles.map((article) => (
+            <Card key={article.id} className="p-4">
+              <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
+              <p className="text-gray-600 mb-4">{article.text}</p>
+              <div className="flex items-center space-x-2 mb-4">
+                {article.category_ids.map((categoryId) => {
+                  const category = categories.find((category) => category.id === categoryId);
+
+                  if (category) {
+                    return (
+                      <Badge key={categoryId} variant="outline">
+                        {category.name}
+                      </Badge>
+                    );
+                  }
+
+                  return null;
+                })}
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-500">{article.created_at}</span>
+              </div>
+            </Card>
+          ))}
+        </div>
+        <div className="mt-8 flex justify-center">
+          <Pagination>
+            <PaginationContent>
               <PaginationItem>
-                <PaginationEllipsis />
+                <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
               </PaginationItem>
-            )}
-            <PaginationItem>
-              <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    href="#"
+                    isActive={index + 1 === currentPage}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              {totalPages > 1 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              <PaginationItem>
+                <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
     </div>
   );
