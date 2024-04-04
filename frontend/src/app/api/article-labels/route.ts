@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
           is_ambiguous,
           is_verified
         )
-        VALUES (?, ?, 0)
+        VALUES (?, ?, 0, 0)
         ON DUPLICATE KEY UPDATE
           category_ids = VALUES(category_ids),
           is_ambiguous = 0,
