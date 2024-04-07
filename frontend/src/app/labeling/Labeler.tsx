@@ -32,8 +32,10 @@ export function Labeler(props: LabelerProps) {
 
   return (
     <div key={article.id} className="bg-white shadow-md rounded-lg p-6 mb-4">
-      <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
-      <p className="text-gray-600 mb-4">{article.text}</p>
+      <a href={`https://everytime.kr/370443/v/${article.id}`} target="_blank">
+        <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
+        <p className="text-gray-600 mb-4">{article.text}</p>
+      </a>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <h3 className="text-lg font-semibold mb-2">Select Categories</h3>
         <div className="space-y-2">
