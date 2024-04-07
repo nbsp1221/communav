@@ -21,7 +21,7 @@ export const categories: Category[] = [
   {
     id: 3,
     name: '장학 · 행정',
-    description: '등록, 장학, 학자금 대출, 각종 증명서 등 장학 및 행정과 관련된 내용',
+    description: '등록, 장학, 전과, 학자금 대출, 각종 증명서 등 장학 및 행정과 관련된 내용',
     isDeprecated: false,
   },
   {
