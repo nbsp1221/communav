@@ -38,24 +38,26 @@ export function Labeler(props: LabelerProps) {
         <h3 className="text-lg font-semibold mb-2">Select Categories</h3>
         <div className="space-y-2">
           {categories.map((category) => (
-            <div key={category.id} className="flex items-center">
-              <Controller
-                control={control}
-                name={`checkedCategories.${category.id}`}
-                render={({ field }) => (
-                  <Checkbox
-                    id={`category-${category.id}-${article.id}`}
-                    className="mr-2"
-                    value={category.id}
-                    onCheckedChange={field.onChange}
-                    checked={field.value}
-                  />
-                )}
-              />
-              <Label htmlFor={`category-${category.id}-${article.id}`}>
-                {category.name}
-              </Label>
-            </div>
+            !category.isDeprecated && (
+              <div key={category.id} className="flex items-center">
+                <Controller
+                  control={control}
+                  name={`checkedCategories.${category.id}`}
+                  render={({ field }) => (
+                    <Checkbox
+                      id={`category-${category.id}-${article.id}`}
+                      className="mr-2"
+                      value={category.id}
+                      onCheckedChange={field.onChange}
+                      checked={field.value}
+                    />
+                  )}
+                />
+                <Label htmlFor={`category-${category.id}-${article.id}`}>
+                  {category.name}
+                </Label>
+              </div>
+            )
           ))}
         </div>
         <Button
