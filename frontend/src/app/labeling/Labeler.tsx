@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -41,6 +42,23 @@ export function Labeler(props: LabelerProps) {
         <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
         <p className="text-gray-600 mb-4">{article.text}</p>
       </a>
+      {article?.category_ids?.length > 0 && (
+        <div className="flex items-center space-x-2 mb-4">
+          {article.category_ids.map((categoryId) => {
+            const category = categories.find((category) => category.id === categoryId);
+
+            if (category) {
+              return (
+                <Badge key={categoryId} variant="outline">
+                  {category.name}
+                </Badge>
+              );
+            }
+
+            return null;
+          })}
+        </div>
+      )}
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <h3 className="text-lg font-semibold mb-2">Select Categories</h3>
         <div className="space-y-2">
