@@ -30,7 +30,7 @@ export default function LabelingPage() {
     fetchUnlabeledArticles();
   }, []);
 
-  const handleLabelSubmit = async (articleId: string, categoryIds: number[]) => {
+  const handleLabelSubmit = async (articleId: string, categoryIds: number[], isVerified: boolean) => {
     try {
       const response = await fetch('/api/article-labels', {
         method: 'POST',
@@ -40,6 +40,7 @@ export default function LabelingPage() {
         body: JSON.stringify({
           articleId,
           categoryIds,
+          isVerified,
         }),
       });
 

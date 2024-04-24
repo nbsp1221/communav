@@ -4,7 +4,7 @@ import { pool } from '@/lib/db';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { articleId, categoryIds } = body;
+    const { articleId, categoryIds, isVerified } = body;
 
     if (!articleId || !categoryIds || !Array.isArray(categoryIds)) {
       return NextResponse.json({ message: 'Invalid request body' }, { status: 400 });
@@ -18,13 +18,13 @@ export async function POST(request: NextRequest) {
           is_ambiguous,
           is_verified
         )
-        VALUES (?, ?, 0, 0)
+        VALUES (?, ?, 0, ?)
         ON DUPLICATE KEY UPDATE
           category_ids = VALUES(category_ids),
-          is_ambiguous = 0,
-          is_verified = 0
+          is_ambiguous = VALUES(is_ambiguous),
+          is_verified = VALUES(is_verified)
       `,
-      [articleId, JSON.stringify(categoryIds)]
+      [articleId, JSON.stringify(categoryIds), isVerified ? 1 : 0]
     );
 
     return NextResponse.json({ message: 'Labels saved successfully' });

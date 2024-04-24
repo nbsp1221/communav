@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,15 +11,19 @@ import { type Article } from '@/types';
 
 interface FormData {
   checkedCategories: Record<string, boolean>;
+  isVerified: boolean;
 }
 
 interface LabelerProps {
   article: Article;
   saved: boolean;
-  onSubmit: (articleId: string, categoryIds: number[]) => void;
+  onSubmit: (articleId: string, categoryIds: number[], isVerified: boolean) => void;
 }
 
 export function Labeler(props: LabelerProps) {
+  const searchParams = useSearchParams();
+  const isVerifyMode = searchParams.get('verify') === 'true';
+
   const { article, saved, onSubmit } = props;
   const { control, handleSubmit } = useForm<FormData>();
 
@@ -27,7 +32,7 @@ export function Labeler(props: LabelerProps) {
       .filter(([, checked]) => checked)
       .map(([id]) => Number(id));
 
-    onSubmit(article.id, categoryIds);
+    onSubmit(article.id, categoryIds, data.isVerified);
   };
 
   return (
@@ -71,6 +76,23 @@ export function Labeler(props: LabelerProps) {
         >
           저장
         </Button>
+        {isVerifyMode && (
+          <div className="mt-4">
+            <Controller
+              control={control}
+              name="isVerified"
+              render={({ field }) => (
+                <Checkbox
+                  id={`verified-${article.id}`}
+                  className="mr-2"
+                  onCheckedChange={field.onChange}
+                  checked={field.value}
+                />
+              )}
+            />
+            <Label htmlFor={`verified-${article.id}`}>검증됨</Label>
+          </div>
+        )}
       </form>
     </div>
   );
