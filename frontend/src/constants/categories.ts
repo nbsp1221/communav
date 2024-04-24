@@ -80,10 +80,4 @@ export const categories: Category[] = [
     description: '수강신청, 동아리, 학사, 장학, 졸업, 행정 등 학교생활과 관련된 내용',
     isDeprecated: true,
   },
-  {
-    id: 101,
-    name: '수업(Deprecated)',
-    description: '교수님, 과제, 시험, 공부법 등 수업과 관련된 내용',
-    isDeprecated: true,
-  },
 ];
