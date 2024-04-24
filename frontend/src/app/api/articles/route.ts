@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     const [rows] = await pool.query<RowDataPacket[]>(
       `
-        SELECT articles.*, labels.category_ids
+        SELECT articles.*, labels.category_ids, labels.is_verified
         FROM everytime_articles articles
         JOIN everytime_article_labels labels ON articles.id = labels.article_id
         WHERE JSON_CONTAINS(labels.category_ids, ?)

@@ -4,4 +4,5 @@ export interface Article {
   text: string;
   created_at: string;
   category_ids: number[];
+  is_verified: boolean;
 }

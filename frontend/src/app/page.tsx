@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/pagination';
 import { categories } from '@/constants/categories';
 import { type Article } from '@/types';
+import { ArticleCard } from './ArticleCard';
 
 interface FetchArticlesRequest {
   categoryIds: number[];
@@ -121,30 +122,7 @@ export default function CommunityPage() {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {articles.map((article) => (
-            <a key={article.id} href={`https://everytime.kr/370443/v/${article.id}`} target="_blank">
-              <Card className="p-4 h-full">
-                <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
-                <p className="text-gray-600 mb-4">{article.text}</p>
-                <div className="flex items-center space-x-2 mb-4">
-                  {article.category_ids.map((categoryId) => {
-                    const category = categories.find((category) => category.id === categoryId);
-
-                    if (category) {
-                      return (
-                        <Badge key={categoryId} variant="outline">
-                          {category.name}
-                        </Badge>
-                      );
-                    }
-
-                    return null;
-                  })}
-                </div>
-                <div className="flex items-center space-x-4">
-                  <span className="text-gray-500">{article.created_at}</span>
-                </div>
-              </Card>
-            </a>
+            <ArticleCard key={article.id} article={article} />
           ))}
         </div>
         <div className="mt-8 flex justify-center">
