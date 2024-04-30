@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const [rows] = await pool.query<RowDataPacket[]>(
       `
         SELECT *
-        FROM everytime_articles
+        FROM everytime_original_articles
         WHERE id NOT IN (
           SELECT article_id
           FROM everytime_article_labels

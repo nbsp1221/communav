@@ -3,11 +3,11 @@ import utils.db as db
 connection = db.get_connection()
 cursor = connection.cursor()
 
-# 에브리타임 게시글 테이블 생성
+# 에브리타임 원본 게시글 테이블 생성
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS everytime_articles (
-        id VARCHAR(255) PRIMARY KEY,
-        board_id VARCHAR(255),
+    CREATE TABLE IF NOT EXISTS everytime_original_articles (
+        id BIGINT PRIMARY KEY,
+        board_id INT,
         is_notice TINYINT(1),
         is_question TINYINT(1),
         title TEXT,
@@ -16,7 +16,7 @@ cursor.execute('''
         like_count INT,
         scrap_count INT,
         comment_count INT,
-        first_comment_id VARCHAR(255),
+        first_comment_id BIGINT,
         user_type VARCHAR(255),
         user_id VARCHAR(255),
         user_nickname VARCHAR(255),
@@ -24,12 +24,12 @@ cursor.execute('''
     )
 ''')
 
-# 에브리타임 댓글 테이블 생성
+# 에브리타임 원본 댓글 테이블 생성
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS everytime_comments (
-        id VARCHAR(255) PRIMARY KEY,
-        article_id VARCHAR(255),
-        parent_id VARCHAR(255),
+    CREATE TABLE IF NOT EXISTS everytime_original_comments (
+        id BIGINT PRIMARY KEY,
+        article_id BIGINT,
+        parent_id BIGINT,
         text TEXT,
         created_at DATETIME,
         like_count INT,
@@ -37,19 +37,19 @@ cursor.execute('''
         user_id VARCHAR(255),
         user_nickname VARCHAR(255),
         user_picture_url VARCHAR(255),
-        FOREIGN KEY (article_id) REFERENCES everytime_articles(id)
+        FOREIGN KEY (article_id) REFERENCES everytime_original_articles(id)
     )
 ''')
 
 # 에브리타임 게시글 레이블 정보 테이블 생성
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS everytime_article_dataset (
-        article_id INT PRIMARY KEY,
+        article_id BIGINT PRIMARY KEY,
         title TEXT,
         text TEXT,
         category_id INT,
         is_verified TINYINT(1),
-        FOREIGN KEY (article_id) REFERENCES everytime_articles(id)
+        FOREIGN KEY (article_id) REFERENCES everytime_original_articles(id)
     )
 ''')
 
