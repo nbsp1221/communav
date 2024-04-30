@@ -43,13 +43,24 @@ cursor.execute('''
 
 # 에브리타임 게시글 레이블 정보 테이블 생성
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS everytime_article_labels (
-        article_id VARCHAR(255) PRIMARY KEY,
-        category_ids JSON,
-        is_ambiguous TINYINT(1),
+    CREATE TABLE IF NOT EXISTS everytime_article_dataset (
+        article_id INT PRIMARY KEY,
+        title TEXT,
+        text TEXT,
+        category_id INT,
         is_verified TINYINT(1),
         FOREIGN KEY (article_id) REFERENCES everytime_articles(id)
     )
 ''')
+
+# cursor.execute('''
+#     CREATE TABLE IF NOT EXISTS everytime_article_labels (
+#         article_id VARCHAR(255) PRIMARY KEY,
+#         category_ids JSON,
+#         is_ambiguous TINYINT(1),
+#         is_verified TINYINT(1),
+#         FOREIGN KEY (article_id) REFERENCES everytime_articles(id)
+#     )
+# ''')
 
 db.close_connection()
