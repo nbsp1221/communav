@@ -49,6 +49,17 @@ cursor.execute('''
         text TEXT,
         category_id INT,
         is_verified TINYINT(1),
+        probs_category_0 FLOAT,
+        probs_category_1 FLOAT,
+        probs_category_2 FLOAT,
+        probs_category_3 FLOAT,
+        probs_category_4 FLOAT,
+        probs_category_5 FLOAT,
+        probs_category_6 FLOAT,
+        probs_category_7 FLOAT,
+        probs_category_8 FLOAT,
+        probs_category_9 FLOAT,
+        probs_category_10 FLOAT,
         FOREIGN KEY (article_id) REFERENCES everytime_original_articles(id)
     )
 ''')
