@@ -60,6 +60,9 @@ cursor.execute('''
         probs_category_8 FLOAT,
         probs_category_9 FLOAT,
         probs_category_10 FLOAT,
+        probs_category_11 FLOAT,
+        probs_category_12 FLOAT,
+        probs_category_13 FLOAT,
         FOREIGN KEY (id) REFERENCES everytime_original_articles(id)
     )
 ''')
