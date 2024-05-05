@@ -41,7 +41,7 @@ cursor.execute('''
     )
 ''')
 
-# 에브리타임 게시글 레이블 정보 테이블 생성
+# 에브리타임 게시글 데이터셋 테이블 생성
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS everytime_article_dataset (
         id BIGINT PRIMARY KEY,
@@ -63,6 +63,15 @@ cursor.execute('''
         probs_category_11 FLOAT,
         probs_category_12 FLOAT,
         probs_category_13 FLOAT,
+        FOREIGN KEY (id) REFERENCES everytime_original_articles(id)
+    )
+''')
+
+# 에브리타임 게시글 예측 결과 테이블 생성
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS everytime_article_predictions (
+        id BIGINT PRIMARY KEY,
+        category_id INT,
         FOREIGN KEY (id) REFERENCES everytime_original_articles(id)
     )
 ''')
