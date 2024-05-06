@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const categoryIds = JSON.parse(searchParams.get('categoryIds') || '[]');
+    const categoryId = categoryIds[0];
     const start = parseInt(searchParams.get('start') || '0', 10);
     const limit = parseInt(searchParams.get('limit') || '20', 10);
 
@@ -17,26 +18,42 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Invalid limit value' }, { status: 400 });
     }
 
-    const [countResult] = await pool.query<RowDataPacket[]>(
-      `
+    const [countResult] = typeof categoryId === 'number'
+      ? await pool.query<RowDataPacket[]>(
+        `
         SELECT COUNT(*) AS total
         FROM everytime_original_articles articles
-        JOIN everytime_article_labels labels ON articles.id = labels.article_id
-        WHERE JSON_CONTAINS(labels.category_ids, ?)
+        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        WHERE predictions.category_id = ?
       `,
-      [JSON.stringify(categoryIds)]
-    );
-
-    const [rows] = await pool.query<RowDataPacket[]>(
-      `
-        SELECT articles.*, labels.category_ids, labels.is_verified
+        [categoryId]
+      ) : await pool.query<RowDataPacket[]>(
+        `
+        SELECT COUNT(*) AS total
         FROM everytime_original_articles articles
-        JOIN everytime_article_labels labels ON articles.id = labels.article_id
-        WHERE JSON_CONTAINS(labels.category_ids, ?)
+        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+      `
+      );
+
+    const [rows] = typeof categoryId === 'number'
+      ? await pool.query<RowDataPacket[]>(
+        `
+        SELECT articles.*, predictions.category_id
+        FROM everytime_original_articles articles
+        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        WHERE predictions.category_id = ?
         LIMIT ? OFFSET ?
       `,
-      [JSON.stringify(categoryIds), limit, start]
-    );
+        [categoryId, limit, start]
+      ) : await pool.query<RowDataPacket[]>(
+        `
+        SELECT articles.*, predictions.category_id
+        FROM everytime_original_articles articles
+        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        LIMIT ? OFFSET ?
+      `,
+        [limit, start]
+      );
 
     return NextResponse.json({
       data: rows,

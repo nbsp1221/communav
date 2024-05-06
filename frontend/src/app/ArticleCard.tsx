@@ -20,6 +20,8 @@ export function ArticleCard(props: ArticleCardProps) {
 
   const [isVerified, setIsVerified] = useState<boolean>(article.is_verified);
 
+  const categoryIds = [article.category_id];
+
   const handleVerify = async () => {
     try {
       const response = await fetch('/api/article-labels', {
@@ -29,7 +31,7 @@ export function ArticleCard(props: ArticleCardProps) {
         },
         body: JSON.stringify({
           articleId: article.id,
-          categoryIds: article.category_ids,
+          categoryIds,
           isVerified: !isVerified,
         }),
       });
@@ -52,7 +54,7 @@ export function ArticleCard(props: ArticleCardProps) {
         <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
         <p className="text-gray-600 mb-4">{article.text}</p>
         <div className="flex items-center space-x-2 mb-4">
-          {article.category_ids.map((categoryId) => {
+          {categoryIds.map((categoryId) => {
             const category = categories.find((category) => category.id === categoryId);
 
             if (category) {

@@ -36,15 +36,17 @@ export function Labeler(props: LabelerProps) {
     onSubmit(article.id, categoryIds, data.isVerified);
   };
 
+  const categoryIds = [article?.category_id];
+
   return (
     <div key={article.id} className="bg-white shadow-md rounded-lg p-6 mb-4">
       <a href={`https://everytime.kr/370443/v/${article.id}`} target="_blank">
         <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
         <p className="text-gray-600 mb-4">{article.text}</p>
       </a>
-      {article?.category_ids?.length > 0 && (
+      {categoryIds.length > 0 && (
         <div className="flex items-center space-x-2 mb-4">
-          {article.category_ids.map((categoryId) => {
+          {categoryIds.map((categoryId) => {
             const category = categories.find((category) => category.id === categoryId);
 
             if (category) {

@@ -6,31 +6,20 @@ export async function GET(request: NextRequest) {
   try {
     const [rows] = await pool.query<RowDataPacket[]>(`
       SELECT
-        category_ids,
+        category_id,
         COUNT(*) AS count
       FROM (
-        SELECT
-          article_id,
-          JSON_EXTRACT(category_ids, '$[*]') AS category_ids
-        FROM everytime_article_labels
-      ) AS labeled_articles
-      GROUP BY category_ids
+        SELECT * FROM everytime_article_predictions
+      ) AS predictions
+      GROUP BY category_id
     `);
 
-    const articlesCount = rows.reduce((prevValue, row) => {
-      if (row.category_ids === null) {
-        prevValue['0'] = row.count;
-      }
-      else {
-        row.category_ids.forEach((categoryId: number) => {
-          prevValue[categoryId] = (prevValue[categoryId] || 0) + row.count;
-        });
-      }
-
+    const articleCounts = rows.reduce((prevValue, row) => {
+      prevValue[row.category_id] = row.count;
       return prevValue;
-    }, {} as Record<string, number>);
+    }, {} as Record<number, number>);
 
-    return NextResponse.json(articlesCount);
+    return NextResponse.json(articleCounts);
   }
   catch (error) {
     console.error('Error while fetching articles statistics:', error);

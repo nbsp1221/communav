@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { categories } from '@/constants/categories';
 
 interface ArticleStatistics {
-  [key: string]: number;
+  [key: number]: number;
 }
 
 export default function StatisticsPage() {
