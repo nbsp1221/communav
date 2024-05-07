@@ -32,6 +32,7 @@ sql_template = '''
         0 AS category_id
     FROM everytime_article_dataset
     WHERE {conditions}
+    ON DUPLICATE KEY UPDATE category_id = VALUES(category_id)
 '''
 
 conditions = ' AND '.join([f'probs_category_{category_id} <= 0.5' for category_id in range(14)])
