@@ -1,15 +1,20 @@
 {
   "cSpell.words": [
+    "beomi",
     "communav",
     "cursorclass",
     "dotenv",
     "everytime",
     "executemany",
+    "fbeta",
     "phpmyadmin",
     "pymysql",
     "referer",
+    "soynlp",
     "tinyint",
+    "tqdm",
     "venv",
+    "wordpieces",
     "xmltodict"
   ]
 }
