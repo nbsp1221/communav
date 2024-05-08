@@ -49,6 +49,7 @@ cursor.execute('''
         text TEXT,
         category_id INT,
         is_verified TINYINT(1),
+        predicted_category_id INT,
         probs_category_0 FLOAT,
         probs_category_1 FLOAT,
         probs_category_2 FLOAT,
