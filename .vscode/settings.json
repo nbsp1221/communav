@@ -1,5 +1,7 @@
 {
   "cSpell.words": [
+    "accs",
+    "argmax",
     "beomi",
     "communav",
     "cursorclass",
@@ -7,14 +9,22 @@
     "everytime",
     "executemany",
     "fbeta",
+    "figsize",
     "phpmyadmin",
+    "prec",
+    "precs",
+    "probs",
     "pymysql",
     "referer",
+    "softmax",
     "soynlp",
     "tinyint",
     "tqdm",
     "venv",
     "wordpieces",
-    "xmltodict"
+    "xlabel",
+    "xmltodict",
+    "xticks",
+    "ylabel"
   ]
 }
