@@ -109,6 +109,11 @@ export default function CommunityPage() {
         </div>
       </nav>
       <div className="container mx-auto py-8">
+      <div className="mb-4 flex">
+          <Button
+          onClick={() => location.href='/write'}
+          >글작성</Button>
+        </div>
         <div className="mb-4 flex space-x-2">
           {categories.map((category) => (
             <Button
