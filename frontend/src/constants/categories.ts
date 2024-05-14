@@ -5,7 +5,7 @@ interface Category {
   isDeprecated?: boolean;
 }
 
-export const categories: Category[] = [
+export const CATEGORIES: Category[] = [
   {
     id: 0,
     name: '자유',

@@ -1,11 +1,6 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { categories } from '@/constants/categories';
+import dayjs from 'dayjs';
+import { FaRegCommentDots, FaRegThumbsUp } from 'react-icons/fa';
+import { CATEGORIES } from '@/constants/categories';
 import { type Article } from '@/types';
 
 interface ArticleCardProps {
@@ -15,77 +10,36 @@ interface ArticleCardProps {
 export function ArticleCard(props: ArticleCardProps) {
   const { article } = props;
 
-  const searchParams = useSearchParams();
-  const isVerifyMode = searchParams.get('verify') === 'true';
-
-  const [isVerified, setIsVerified] = useState<boolean>(article.is_verified);
-
-  const categoryIds = [article.category_id];
-
-  const handleVerify = async () => {
-    try {
-      const response = await fetch('/api/article-labels', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          articleId: article.id,
-          categoryIds,
-          isVerified: !isVerified,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to save labels');
-        return;
-      }
-
-      setIsVerified(!isVerified);
-    }
-    catch (error) {
-      console.error('Error while saving labels:', error);
-    }
-  };
+  const categoryName = CATEGORIES.find((category) => category.id === article.category_id)?.name;
 
   return (
-    <a key={article.id} href={`https://everytime.kr/370443/v/${article.id}`} target="_blank">
-      <Card className="p-4 h-full">
-        <h2 className="text-2xl font-bold mb-2">{article.title}</h2>
-        <p className="text-gray-600 mb-4">{article.text}</p>
-        <div className="flex items-center space-x-2 mb-4">
-          {categoryIds.map((categoryId) => {
-            const category = categories.find((category) => category.id === categoryId);
-
-            if (category) {
-              return (
-                <Badge key={categoryId} variant="outline">
-                  {category.name}
-                </Badge>
-              );
-            }
-
-            return null;
-          })}
-        </div>
-        <div className="flex items-center space-x-4 justify-between">
-          <span className="text-gray-500">{article.created_at}</span>
-          {isVerifyMode && (
-            <div className="mt-4">
-              <Button
-                className={isVerified ? 'bg-green-500 hover:bg-green-600' : ''}
-                variant="default"
-                onClick={(event) => {
-                  event.preventDefault();
-                  handleVerify();
-                }}
-              >
-                검증
-              </Button>
+    <div className="py-4 bg-white">
+      <a href={`https://everytime.kr/370443/v/${article.id}`} target="_blank">
+        <div>
+          <div className="text-sm text-gray-500">{categoryName}</div>
+          <h2 className="text-lg font-semibold mb-2">{article.title}</h2>
+          <p className="text-gray-800 h-12 mb-2 line-clamp-2">{article.text}</p>
+          <div className="flex justify-between text-sm text-gray-500">
+            <div className="flex gap-3">
+              {article.like_count > 0 && (
+                <div className="flex items-center">
+                  <FaRegThumbsUp className="text-red-500 mr-1" />
+                  <span className="text-red-500">{article.like_count}</span>
+                </div>
+              )}
+              {article.comment_count > 0 && (
+                <div className="flex items-center">
+                  <FaRegCommentDots className="text-cyan-500 mr-1" />
+                  <span className="text-cyan-500">{article.comment_count}</span>
+                </div>
+              )}
             </div>
-          )}
+            <div>
+              {dayjs(article.created_at).format('YYYY-MM-DD HH:mm:ss')}
+            </div>
+          </div>
         </div>
-      </Card>
-    </a>
+      </a>
+    </div>
   );
 }

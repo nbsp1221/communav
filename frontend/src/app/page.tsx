@@ -2,9 +2,6 @@
 
 import queryString from 'query-string';
 import { useEffect, useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import {
   Pagination,
   PaginationContent,
@@ -14,12 +11,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { categories } from '@/constants/categories';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 import { type Article } from '@/types';
 import { ArticleCard } from './ArticleCard';
+import { CategoryFilter } from './CategoryFilter';
 
 interface FetchArticlesRequest {
-  categoryIds: number[];
+  categoryId: number | null;
   start: number;
   limit: number;
 }
@@ -35,7 +34,7 @@ interface FetchArticlesResponse {
 
 async function fetchArticles(request: FetchArticlesRequest): Promise<FetchArticlesResponse> {
   const response = await fetch(`/api/articles?${queryString.stringify({
-    categoryIds: JSON.stringify(request.categoryIds),
+    categoryId: request.categoryId,
     start: request.start,
     limit: request.limit,
   })}`);
@@ -54,7 +53,7 @@ export default function CommunityPage() {
 
   useEffect(() => {
     fetchArticles({
-      categoryIds: selectedCategory ? [selectedCategory] : [],
+      categoryId: selectedCategory,
       start: pagination.start,
       limit: pagination.limit,
     })
@@ -90,37 +89,19 @@ export default function CommunityPage() {
 
   return (
     <div>
-      <nav className="bg-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <a href="/" className="text-white text-2xl font-bold">커뮤니티</a>
-            </div>
-            <div className="flex space-x-4">
-              <a href="/labeling" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">라벨링</a>
-              <a href="/statistics" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">통계</a>
-            </div>
-          </div>
-        </div>
-      </nav>
       <div className="container mx-auto py-8">
-        <div className="mb-4 flex">
-          <Button onClick={() => location.href='/write'}>글작성</Button>
+        <div className="mb-4">
+          <CategoryFilter selectedCategory={selectedCategory} onClick={selectCategory} />
         </div>
-        <div className="mb-4 flex space-x-2">
-          {categories.map((category) => (
-            <Button
-              key={category.id}
-              variant={selectedCategory === category.id ? 'default' : 'outline'}
-              onClick={() => selectCategory(category.id)}
+        <Separator />
+        <div className="grid grid-cols-2">
+          {articles.map((article, index) => (
+            <div
+              key={article.id}
+              className={cn('border-b border-border', index % 2 ? 'pl-4' : 'pr-4 border-r')}
             >
-              {category.name}
-            </Button>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+              <ArticleCard article={article} />
+            </div>
           ))}
         </div>
         <div className="mt-8 flex justify-center">
@@ -130,14 +111,12 @@ export default function CommunityPage() {
                 <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
               </PaginationItem>
               {startPage > 1 && (
-                <PaginationItem>
-                  <PaginationLink href="#" onClick={() => handlePageChange(1)}>1</PaginationLink>
-                </PaginationItem>
-              )}
-              {startPage > 2 && (
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
+                <>
+                  <PaginationItem>
+                    <PaginationLink href="#" onClick={() => handlePageChange(1)}>1</PaginationLink>
+                  </PaginationItem>
+                  {startPage > 2 && <PaginationEllipsis />}
+                </>
               )}
               {visiblePages.map((page) => (
                 <PaginationItem key={page}>
@@ -150,15 +129,13 @@ export default function CommunityPage() {
                   </PaginationLink>
                 </PaginationItem>
               ))}
-              {endPage < totalPages - 1 && (
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              )}
               {endPage < totalPages && (
-                <PaginationItem>
-                  <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>{totalPages}</PaginationLink>
-                </PaginationItem>
+                <>
+                  {endPage < totalPages - 1 && <PaginationEllipsis />}
+                  <PaginationItem>
+                    <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>{totalPages}</PaginationLink>
+                  </PaginationItem>
+                </>
               )}
               <PaginationItem>
                 <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />

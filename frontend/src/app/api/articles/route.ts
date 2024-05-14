@@ -5,8 +5,7 @@ import { pool } from '@/lib/db';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const categoryIds = JSON.parse(searchParams.get('categoryIds') || '[]');
-    const categoryId = categoryIds[0];
+    const categoryId = searchParams.get('categoryId') ? parseInt(searchParams.get('categoryId')!, 10) : null;
     const start = parseInt(searchParams.get('start') || '0', 10);
     const limit = parseInt(searchParams.get('limit') || '20', 10);
 

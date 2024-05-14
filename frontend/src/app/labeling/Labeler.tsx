@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { categories } from '@/constants/categories';
+import { CATEGORIES } from '@/constants/categories';
 import { cn } from '@/lib/utils';
 import { type Article } from '@/types';
 
@@ -47,7 +47,7 @@ export function Labeler(props: LabelerProps) {
       {categoryIds.length > 0 && (
         <div className="flex items-center space-x-2 mb-4">
           {categoryIds.map((categoryId) => {
-            const category = categories.find((category) => category.id === categoryId);
+            const category = CATEGORIES.find((category) => category.id === categoryId);
 
             if (category) {
               return (
@@ -64,7 +64,7 @@ export function Labeler(props: LabelerProps) {
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <h3 className="text-lg font-semibold mb-2">Select Categories</h3>
         <div className="space-y-2">
-          {categories.map((category) => (
+          {CATEGORIES.map((category) => (
             !category.isDeprecated && (
               <div key={category.id} className="flex items-center">
                 <Controller

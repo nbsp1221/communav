@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { categories } from '@/constants/categories';
+import { CATEGORIES } from '@/constants/categories';
 import { type Article } from '@/types';
 import { Labeler } from './Labeler';
 
@@ -71,7 +71,7 @@ export default function LabelingPage() {
           카테고리를 선택 후 저장 버튼을 눌러주세요. 카테고리는 중복 선택이 가능하며, 아무것도 선택하지 않고 저장할 경우 어떠한 카테고리에도 속할 수 없다는 정보로 저장됩니다.
         </p>
         <ul className="list-disc list-inside space-y-2">
-          {categories.map((category) => (
+          {CATEGORIES.map((category) => (
             <li key={category.id}>
               <span className="font-semibold">{category.name}</span>
               <span>: {category.description}</span>

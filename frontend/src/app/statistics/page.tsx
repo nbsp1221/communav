@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { categories } from '@/constants/categories';
+import { CATEGORIES } from '@/constants/categories';
 
 interface ArticleStatistics {
   [key: number]: number;
@@ -31,7 +31,7 @@ export default function StatisticsPage() {
     return <div>Loading...</div>;
   }
 
-  const chartData = categories.map((category) => ({
+  const chartData = CATEGORIES.map((category) => ({
     name: category.name,
     value: articleStatistics[category.id] || 0,
   }));
