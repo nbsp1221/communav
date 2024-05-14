@@ -68,6 +68,10 @@ export default function CommunityPage() {
 
   const selectCategory = (categoryId: number) => {
     setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      start: 0,
+    }));
   };
 
   const totalPages = Math.ceil(pagination.totalCount / pagination.limit);
