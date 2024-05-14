@@ -48,13 +48,13 @@ async function fetchArticles(request: FetchArticlesRequest): Promise<FetchArticl
 }
 
 export default function CommunityPage() {
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pagination, setPagination] = useState({ totalCount: 0, start: 0, limit: 20 });
 
   useEffect(() => {
     fetchArticles({
-      categoryIds: selectedCategories,
+      categoryIds: selectedCategory ? [selectedCategory] : [],
       start: pagination.start,
       limit: pagination.limit,
     })
@@ -65,15 +65,10 @@ export default function CommunityPage() {
       .catch((error) => {
         console.error('Error while fetching articles:', error);
       });
-  }, [selectedCategories, pagination.start, pagination.limit]);
+  }, [selectedCategory, pagination.start, pagination.limit]);
 
-  const toggleCategory = (categoryId: number) => {
-    if (selectedCategories.includes(categoryId)) {
-      setSelectedCategories(selectedCategories.filter((value) => value !== categoryId));
-    }
-    else {
-      setSelectedCategories([...selectedCategories, categoryId]);
-    }
+  const selectCategory = (categoryId: number) => {
+    setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
   };
 
   const totalPages = Math.ceil(pagination.totalCount / pagination.limit);
@@ -109,17 +104,15 @@ export default function CommunityPage() {
         </div>
       </nav>
       <div className="container mx-auto py-8">
-      <div className="mb-4 flex">
-          <Button
-          onClick={() => location.href='/write'}
-          >글작성</Button>
+        <div className="mb-4 flex">
+          <Button onClick={() => location.href='/write'}>글작성</Button>
         </div>
         <div className="mb-4 flex space-x-2">
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant={selectedCategories.includes(category.id) ? 'default' : 'outline'}
-              onClick={() => toggleCategory(category.id)}
+              variant={selectedCategory === category.id ? 'default' : 'outline'}
+              onClick={() => selectCategory(category.id)}
             >
               {category.name}
             </Button>
