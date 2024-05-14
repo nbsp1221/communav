@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
         FROM everytime_original_articles articles
         JOIN everytime_article_predictions predictions ON articles.id = predictions.id
         WHERE predictions.category_id = ?
+        ORDER BY articles.created_at DESC
       `,
         [categoryId]
       ) : await pool.query<RowDataPacket[]>(
@@ -31,6 +32,7 @@ export async function GET(request: NextRequest) {
         SELECT COUNT(*) AS total
         FROM everytime_original_articles articles
         JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        ORDER BY articles.created_at DESC
       `
       );
 
@@ -41,6 +43,7 @@ export async function GET(request: NextRequest) {
         FROM everytime_original_articles articles
         JOIN everytime_article_predictions predictions ON articles.id = predictions.id
         WHERE predictions.category_id = ?
+        ORDER BY articles.created_at DESC
         LIMIT ? OFFSET ?
       `,
         [categoryId, limit, start]
@@ -49,6 +52,7 @@ export async function GET(request: NextRequest) {
         SELECT articles.*, predictions.category_id
         FROM everytime_original_articles articles
         JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        ORDER BY articles.created_at DESC
         LIMIT ? OFFSET ?
       `,
         [limit, start]
