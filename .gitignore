@@ -1,6 +1,6 @@
 *.pth
 __pycache__
 .env
+.model-*
 .venv
 mysql
-model-*
