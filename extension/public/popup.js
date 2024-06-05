@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('text').innerText = response.text;
   });
 
-  document.getElementById('sendPost').addEventListener('click', function () {
+  document.getElementById('sendPost').addEventListener('click', async () => {
     let title = document.querySelector('div[id="title"]').textContent;
     let text = document.querySelector('div[id="text"]').textContent;
 
@@ -15,34 +15,42 @@ document.addEventListener('DOMContentLoaded', function () {
     const url = `http://39.124.11.92:50000/which_tag?text=${encodeURIComponent(userText)}`;
     // const url = `http://0.0.0.0:8000/which_tag?text=${userText}`;
 
-    if (userText == '') alert('No content');
-    else {
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          // alert(JSON.stringify(data, null, 2));
-          const categorySelect = document.getElementById('categorySelect');
-          categorySelect.innerHTML = '';
+    const sendPostBtn = document.getElementById('sendPost');
+    sendPostBtn.disabled = true;
 
-          if (Array.isArray(data.message)) {
-            data.message.forEach(tag => {
-              const option = document.createElement('option');
-              option.value = tag;
-              option.textContent = tag;
-              categorySelect.appendChild(option);
-            });
-          } else {
-            alert('Expected an array in data.message, but got:' + data.message);
-          }
-        })
-        .catch(error => {
-          alert('There was a problem with your fetch operation:' + error);
-        });
+    if (userText == '') {
+      alert('No content');
+    }
+    else {
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        const categorySelect = document.getElementById('categorySelect');
+        categorySelect.innerHTML = '';
+
+        if (Array.isArray(data.message)) {
+          data.message.forEach(tag => {
+            const option = document.createElement('option');
+            option.value = tag;
+            option.textContent = tag;
+            categorySelect.appendChild(option);
+          });
+        }
+        else {
+          alert('Expected an array in data.message, but got:' + data.message);
+        }
+      }
+      catch (error) {
+        alert('Error:', error);
+      }
+      finally {
+        sendPostBtn.disabled = false;
+      }
     }
   });
 
@@ -50,10 +58,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // 선택된 카테고리와 함께 글을 아카이빙하는 서버로 보내는 코드
     const title = document.querySelector('div[id="title"]').textContent;
     const text = document.querySelector('div[id="text"]').textContent;
+    const categoryText = document.getElementById('categorySelect').value;
 
-    // 해당 코드 동작하는지 테스트를 못해서 임시로 50 넣음.
-    // const categoryId = document.getElementById('categorySelect').value;
-    const categoryId = 50;
+    const categoryMapper = {
+      '자유': 0,
+      '학사': 1,
+      '장학/행정': 2,
+      '학교생활': 3,
+      '수업': 4,
+      '수업/이과': 5,
+      '수업/문과': 6,
+      '캠퍼스': 7,
+      '취업/진로': 8,
+      '일상생활': 9,
+      '음식점/카페': 10,
+      '취미/여가': 11,
+      '인간관계': 12,
+      '병역': 13
+    };
+
+    const categoryId = categoryMapper[categoryText];
 
     const response = await fetch('http://retn0.iptime.org:11000/api/articles', {
       method: 'POST',
