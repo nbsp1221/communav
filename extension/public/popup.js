@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const categoryMapper = {
       '자유': 0,
-      '학사': 1,
+      '학사/졸업': 1,
       '장학/행정': 2,
       '학교생활': 3,
       '수업': 4,
