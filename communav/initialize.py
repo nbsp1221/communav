@@ -111,4 +111,34 @@ cursor.execute('''
 #     )
 # ''')
 
+# 서비스 자체 게시글 테이블 생성
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS articles (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        board_id INT DEFAULT 370443,
+        is_notice TINYINT(1) DEFAULT 0,
+        is_question TINYINT(1) DEFAULT 0,
+        title TEXT,
+        text TEXT,
+        created_at DATETIME,
+        like_count INT DEFAULT 0,
+        scrap_count INT DEFAULT 0,
+        comment_count INT DEFAULT 0,
+        first_comment_id BIGINT DEFAULT NULL,
+        user_type VARCHAR(255) DEFAULT "",
+        user_id VARCHAR(255) DEFAULT "0",
+        user_nickname VARCHAR(255) DEFAULT "익명",
+        user_picture_url VARCHAR(255) DEFAULT "https://cf-fpi.everytime.kr/0.png"
+    )
+''')
+
+# 서비스 자체 예측 결과 테이블 생성
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS article_predictions (
+        id BIGINT PRIMARY KEY,
+        category_id INT,
+        FOREIGN KEY (id) REFERENCES articles(id)
+    )
+''')
+
 db.close_connection()

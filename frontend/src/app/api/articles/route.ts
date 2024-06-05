@@ -1,6 +1,16 @@
-import { type RowDataPacket } from 'mysql2';
+import { type ResultSetHeader, type RowDataPacket } from 'mysql2';
 import { type NextRequest, NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
+
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,8 +31,8 @@ export async function GET(request: NextRequest) {
       ? await pool.query<RowDataPacket[]>(
         `
         SELECT COUNT(*) AS total
-        FROM everytime_original_articles articles
-        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        FROM articles
+        JOIN article_predictions predictions ON articles.id = predictions.id
         WHERE predictions.category_id = ?
         ORDER BY articles.created_at DESC
       `,
@@ -30,8 +40,8 @@ export async function GET(request: NextRequest) {
       ) : await pool.query<RowDataPacket[]>(
         `
         SELECT COUNT(*) AS total
-        FROM everytime_original_articles articles
-        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        FROM articles
+        JOIN article_predictions predictions ON articles.id = predictions.id
         ORDER BY articles.created_at DESC
       `
       );
@@ -40,8 +50,8 @@ export async function GET(request: NextRequest) {
       ? await pool.query<RowDataPacket[]>(
         `
         SELECT articles.*, predictions.category_id
-        FROM everytime_original_articles articles
-        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        FROM articles
+        JOIN article_predictions predictions ON articles.id = predictions.id
         WHERE predictions.category_id = ?
         ORDER BY articles.created_at DESC
         LIMIT ? OFFSET ?
@@ -50,8 +60,8 @@ export async function GET(request: NextRequest) {
       ) : await pool.query<RowDataPacket[]>(
         `
         SELECT articles.*, predictions.category_id
-        FROM everytime_original_articles articles
-        JOIN everytime_article_predictions predictions ON articles.id = predictions.id
+        FROM articles
+        JOIN article_predictions predictions ON articles.id = predictions.id
         ORDER BY articles.created_at DESC
         LIMIT ? OFFSET ?
       `,
@@ -70,6 +80,46 @@ export async function GET(request: NextRequest) {
   catch (error) {
     console.error('Error while fetching articles by categories:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { title, text, categoryId } = await request.json();
+
+    if (!title || !text) {
+      return NextResponse.json({ message: 'Title and text are required' }, { status: 400 });
+    }
+
+    if (!categoryId) {
+      return NextResponse.json({ message: 'Category ID is required' }, { status: 400 });
+    }
+
+    const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+    const [result] = await pool.query<ResultSetHeader>(
+      `
+      INSERT INTO articles (title, text, created_at)
+      VALUES (?, ?, ?)
+    `,
+      [title, text, createdAt]
+    );
+
+    await pool.query<ResultSetHeader>(
+      `
+      INSERT INTO article_predictions (id, category_id)
+      VALUES (?, ?)
+    `,
+      [result.insertId, categoryId]
+    );
+
+    return NextResponse.json({ message: 'Article created successfully', id: result.insertId }, {
+      headers: corsHeaders,
+    });
+  }
+  catch (error) {
+    console.error('Error while creating new article:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500, headers: corsHeaders });
   }
 }
 

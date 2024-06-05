@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         category_id,
         COUNT(*) AS count
       FROM (
-        SELECT * FROM everytime_article_predictions
+        SELECT * FROM article_predictions
       ) AS predictions
       GROUP BY category_id
     `);
