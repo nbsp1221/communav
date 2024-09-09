@@ -91,6 +91,31 @@ cursor.execute('''
         probs_category_13 FLOAT
     )
 ''')
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS everytime_article_dataset_v2 (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        article_id BIGINT,
+        title TEXT,
+        text TEXT,
+        category_id INT,
+        is_verified TINYINT(1),
+        possible_category_id INT,
+        probs_category_0 FLOAT,
+        probs_category_1 FLOAT,
+        probs_category_2 FLOAT,
+        probs_category_3 FLOAT,
+        probs_category_4 FLOAT,
+        probs_category_5 FLOAT,
+        probs_category_6 FLOAT,
+        probs_category_7 FLOAT,
+        probs_category_8 FLOAT,
+        probs_category_9 FLOAT,
+        probs_category_10 FLOAT,
+        probs_category_11 FLOAT,
+        probs_category_12 FLOAT,
+        probs_category_13 FLOAT
+    )
+''')
 
 # 에브리타임 게시글 예측 결과 테이블 생성
 cursor.execute('''
