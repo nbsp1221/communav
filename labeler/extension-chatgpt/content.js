@@ -120,7 +120,7 @@ function preprocessConversationResponse(response) {
   console.log('Preprocessed articles:', articles);
 
   await patchArticles(articles);
-  await delay(5000);
+  await delay(3 * 60 * 1000);
 
   location.href = 'https://chatgpt.com';
 })();
