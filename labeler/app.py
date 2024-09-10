@@ -68,7 +68,7 @@ def generate_prompt(articles):
     ]
     return '\n'.join(lines)
 
-def get_articles(limit=50):
+def get_articles(limit=100):
     cursor = connection.cursor()
     cursor.execute('''
         SELECT
