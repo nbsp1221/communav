@@ -36,10 +36,38 @@ const TEXTAREA_SELECTOR = '#prompt-textarea';
 const SEND_BUTTON_SELECTOR = 'button[data-testid="send-button"]';
 const STOP_BUTTON_SELECTOR = 'button[data-testid="stop-button"]';
 
+function insertText(element, text) {
+  element.focus();
+  document.execCommand('insertText', false, text);
+}
+
+function simulateShiftEnter(element) {
+  const shiftEnterEvent = new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    keyCode: 13,
+    which: 13,
+    key: 'Enter',
+    shiftKey: true,
+  });
+  element.dispatchEvent(shiftEnterEvent);
+}
+
 async function createConversation(message) {
   const textArea = await waitForElement(TEXTAREA_SELECTOR);
-  textArea.focus();
-  textArea.value = message;
+
+  // 메시지를 줄 단위로 분할
+  const lines = message.split('\n');
+
+  for (let i = 0; i < lines.length; i++) {
+    insertText(textArea, lines[i]);
+
+    // 마지막 줄이 아니라면 Shift+Enter 이벤트를 발생시킴
+    if (i < lines.length - 1) {
+      simulateShiftEnter(textArea);
+    }
+  }
+
   textArea.dispatchEvent(new Event('input', { bubbles: true }));
 
   while (true) {
