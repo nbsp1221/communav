@@ -12,6 +12,7 @@
     "fastapi",
     "fbeta",
     "figsize",
+    "openai",
     "optim",
     "phpmyadmin",
     "prec",
