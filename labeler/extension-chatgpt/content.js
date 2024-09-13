@@ -148,11 +148,11 @@ function preprocessConversationResponse(response) {
   console.log('Preprocessed articles:', articles);
 
   await patchArticles(articles);
-  await delay(3 * 60 * 1000);
+  await delay(5 * 60 * 1000);
 
-  location.href = 'https://chatgpt.com';
+  location.href = 'https://chatgpt.com/?model=o1-preview';
 })();
 
 setTimeout(() => {
-  location.href = 'https://chatgpt.com';
-}, 5 * 60 * 1000);
+  location.href = 'https://chatgpt.com/?model=o1-preview';
+}, 10 * 60 * 1000);
