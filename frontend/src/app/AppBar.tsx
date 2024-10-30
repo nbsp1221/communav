@@ -16,9 +16,9 @@ export function AppBar() {
             <Link className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/write">
               모델 데모
             </Link>
-            <Link className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/labeling">
+            {/* <Link className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/labeling">
               레이블링
-            </Link>
+            </Link> */}
             <Link className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/statistics">
               통계
             </Link>
