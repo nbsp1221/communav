@@ -166,4 +166,13 @@ cursor.execute('''
     )
 ''')
 
+# 서비스 임베딩 테이블 생성
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS article_embeddings (
+        id BIGINT PRIMARY KEY,
+        embedding LONGTEXT NOT NULL,
+        FOREIGN KEY (id) REFERENCES articles(id)
+    )
+''')
+
 db.close_connection()
