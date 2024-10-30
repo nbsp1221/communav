@@ -25,3 +25,20 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     depends_on:
       - db
+
+  weaviate:
+    image: semitechnologies/weaviate:1.23.0
+    restart: always
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      CLUSTER_HOSTNAME: 'node1'
+    ports:
+      - 8090:8080
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+
+volumes:
+  weaviate_data:
