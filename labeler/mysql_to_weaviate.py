@@ -47,7 +47,7 @@ def get_total_count(connection):
     cursor.close()
     return result['count']
 
-def process_batch(connection, offset, batch_size, pbar):
+def process_batch(connection, last_id, batch_size, pbar):
     cursor = connection.cursor()
     try:
         cursor.execute('''
@@ -58,12 +58,14 @@ def process_batch(connection, offset, batch_size, pbar):
                 article_embeddings.embedding
             FROM articles
             JOIN article_embeddings ON articles.id = article_embeddings.id
-            LIMIT %s OFFSET %s
-        ''', (batch_size, offset))
+            WHERE articles.id > %s
+            ORDER BY articles.id
+            LIMIT %s
+        ''', (last_id, batch_size))
 
         batch_data = cursor.fetchall()
         if not batch_data:
-            return 0
+            return 0, last_id
 
         with client.batch as batch:
             batch.batch_size = batch_size
@@ -80,8 +82,9 @@ def process_batch(connection, offset, batch_size, pbar):
                     vector=embedding
                 )
                 pbar.update(1)
+                last_id = article['id']
 
-        return len(batch_data)
+        return len(batch_data), last_id
     finally:
         cursor.close()
 
@@ -102,17 +105,15 @@ def main():
         print(f'Total records to migrate: {total_records}')
 
         batch_size = 100
-        offset = 0
+        last_id = 0
         processed_total = 0
 
         with tqdm(total=total_records, desc='Migrating articles') as pbar:
             while processed_total < total_records:
-                processed = process_batch(connection, offset, batch_size, pbar)
+                processed, last_id = process_batch(connection, last_id, batch_size, pbar)
                 if not processed:
                     break
                 processed_total += processed
-                offset += batch_size
-                # time.sleep(1)
 
         print(f'\nMigration completed. Total records processed: {processed_total}')
 
